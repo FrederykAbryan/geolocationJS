@@ -29,6 +29,21 @@ if (navigator.geolocation)
       const { latitude } = position.coords;
       const { longitude } = position.coords;
       console.log(`https://www.google.co.id/maps/@${latitude},${longitude}`);
+
+      const coords = [latitude, longitude];
+
+      const map = L.map('map').setView(coords, 13);
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(map);
+
+      map.on('click', function (mapEvent) {
+        const { lat, lng } = mapEvent.latlng;
+
+        L.marker([lat, lng]).addTo(map).bindPopup('Custom pop coy').openPopup();
+      });
     },
     function () {
       alert('could not get your position');
