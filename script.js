@@ -23,6 +23,40 @@ const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 
+class Workout {
+  date = new Date();
+  id = (new Date() + '').slice(-10);
+
+  constructor(coords, distance, duration) {
+    this.coords = coords;
+    this.distance = distance;
+    this.duration = duration;
+  }
+}
+
+class Running extends Workout {
+  constructor(coords, distance, cadence) {
+    super(coords, distance, duration);
+    this.cadence = cadence;
+    this.calcPace();
+  }
+  calcPace() {
+    this.pace = this.duration / this.distance;
+    return this.pace;
+  }
+}
+
+class Cycling extends Workout {
+  constructor(coords, distance, elevationGain) {
+    super(coords, distance, duration);
+    this.cadence = elevationGain;
+    this.calcSpeed();
+  }
+  calcSpeed() {
+    this.speed = this.distance / (this.duration / 60);
+    return this.speed;
+  }
+}
 class App {
   #map;
   #mapEvent;
@@ -74,6 +108,27 @@ class App {
   _newWorkout(e) {
     e.preventDefault();
 
+    // Get data from form
+    const type = inputType.value;
+    const distance = +inputDistance.value;
+    const duration = +inputDuration.value;
+
+    // If workuout running,create running
+    if (type === 'running') {
+      const cadence = +inputCadence.value;
+      if (
+        !Number.isFinite(distance) &&
+        !Number.isFinite(duration) &&
+        !Number.isFinite(cadence)
+      )
+        return alert('Input is invalid');
+    }
+
+    // If cycling
+    if (type === 'cycling') {
+      const elevation = +inputElevation.value;
+    }
+
     const { lat, lng } = this.#mapEvent.latlng;
     // Clear input fields
     inputDistance.value = inputDuration.value = inputCadence.value = inputElevation.value =
@@ -97,4 +152,3 @@ class App {
 }
 
 const app = new App();
-app._getPosition();
